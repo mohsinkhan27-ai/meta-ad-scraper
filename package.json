@@ -1,0 +1,29 @@
+{
+  "name": "meta-ad-scraper",
+  "version": "1.0.0",
+  "description": "Meta Ad Library Scraper & Real-Time GUI built with Playwright and Express",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "build": "npx playwright install chromium --with-deps || npx playwright install chromium",
+    "postinstall": "npx playwright install chromium",
+    "dev": "node server.js",
+    "scraper": "node server.js"
+  },
+  "keywords": [
+    "meta",
+    "facebook",
+    "ad-library",
+    "scraper",
+    "playwright",
+    "express"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "json2csv": "^6.0.0-alpha.2",
+    "playwright": "^1.63.0"
+  }
+}
