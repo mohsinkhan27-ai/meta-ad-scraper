@@ -1,77 +1,142 @@
-# 🚀 Meta Ad Library Scraper & GUI
+# Meta Ad Library Scraper
 
-A full-featured Node.js application built with **Playwright** and **Express** that scrapes the **Meta Ad Library** and offers a modern, real-time GUI with Tailwind CSS.
+A Node.js + Playwright application for collecting publicly available Meta Ad Library ad data through a browser-based scraper and exploring the results in a real-time web UI.
 
----
+> **Status:** Early-stage open-source project. The scraper depends on the current structure and behavior of Meta Ad Library pages, which may change without notice.
 
-## 📸 Key Features
+## What it does
 
-- **🎯 Direct Search & URL Support**: Enter a full Meta Ad Library URL, brand name (e.g. `Nike`, `Shopify`), or Page ID.
-- **⚡ Live Streaming (SSE)**: Watch logs and newly scraped ads appear in real-time as the scraper scrolls through results.
-- **📊 Metric Counters**: Tracks total scraped ads, media assets (images vs. videos), platforms, and scraping rate.
-- **🎴 Visual Card Gallery & Data Table Views**: Toggle between rich visual ad cards and sortable data tables.
-- **🔍 Instant Filtering**: Search by advertiser, keyword, platform, or CTA in real-time.
-- **📥 Clean CSV & JSON Export**: One-click download with UTF-8 BOM encoding for Excel compatibility.
-- **🛡️ Anti-Bot Evasion**: Configured with automated cookie banner dismissal and stealth headers.
+- Search by Meta Ad Library URL, advertiser/brand query, or Page ID
+- Scrape ad records with live progress updates
+- Extract advertiser, start date, status, platforms, primary text, headline, description, CTA, destination URL, image URL, and video URL
+- View results as a visual card gallery or data table
+- Filter results by advertiser, keyword, platform, or CTA
+- Export results as CSV or JSON
+- Use headless Playwright Chromium for automated collection
+- Stream scraper events to the browser using Server-Sent Events (SSE)
 
----
+## Screenshots & demo
 
-## 📋 Extracted Ad Fields (10 Required Fields)
+The project includes a browser-based GUI with a configuration panel, live scraping terminal, metrics dashboard, card gallery, and data table.
 
-Each ad record extracts:
-1. **Advertiser Name** (`advertiserName`): Header text of the ad card.
-2. **Start Date** (`startDate`): Extracted date formatted as `"Started running on [Date]"`.
-3. **Platforms** (`platforms`): Facebook, Instagram, Messenger, Audience Network.
-4. **Primary Text** (`primaryText`): Main body caption text.
-5. **Headline** (`headline`): Bold title text near the CTA button.
-6. **Description** (`description`): Secondary text underneath the headline.
-7. **CTA (Call to Action)** (`cta`): Text inside the main interactive button (e.g., `"Learn More"`, `"Shop Now"`).
-8. **Destination URL** (`destinationUrl`): Target URL decoded directly from Meta link wrappers.
-9. **Image URL** (`imageUrl`): High-resolution creative image URL.
-10. **Video URL** (`videoUrl`): Video source URL or video thumbnail/poster URL.
+**Live demo:** Not currently hosted.
 
----
+**Screenshots:** Screenshots will be added after the first public release/deployment. Until then, run the project locally to see the current interface.
 
-## 🛠️ Installation & Setup
+## Extracted fields
 
-### 1. Install Node.js Dependencies
+| Field | Description |
+|---|---|
+| Advertiser | Advertiser/page name |
+| Start date | Date the ad started running |
+| Status | Active or inactive when detectable |
+| Platforms | Facebook, Instagram, Messenger, Audience Network |
+| Primary text | Main ad copy |
+| Headline | Ad headline |
+| Description | Secondary description |
+| CTA | Call-to-action text |
+| Destination URL | Decoded landing-page URL when available |
+| Image URL | Creative image URL when available |
+| Video URL | Video source/poster URL when available |
+
+## Requirements
+
+- Node.js 18+
+- npm
+- Chromium-compatible environment
+- Internet access
+
+## Local development
+
 ```bash
+git clone https://github.com/mohsinkhan27-ai/meta-ad-scraper.git
+cd meta-ad-scraper
 npm install
-```
-
-### 2. Install Playwright Chromium Browser
-```bash
 npx playwright install chromium
+npm start
 ```
 
----
+Open:
 
-## 🏃‍♂️ How to Run
+```
+http://localhost:3000
+```
 
-### Start the Express Server & GUI:
+### Development mode
+
 ```bash
-node server.js
+npm run dev
 ```
-*or via npm script:*
+
+The current application uses Node.js, Express, Playwright, Tailwind CSS via CDN, and JSON/CSV export tooling.
+
+## Docker
+
+The repository includes a Playwright-based Dockerfile.
+
 ```bash
-npm run scraper
+docker build -t meta-ad-scraper .
+docker run --rm -p 3000:3000 meta-ad-scraper
 ```
 
-Open your browser at:
-```
-👉 http://localhost:3000
-```
+Then open `http://localhost:3000`.
 
----
+## Deployment
 
-## 📂 Project Architecture
+### Render
 
-```
-├── scraper.js          # Core Playwright scraper engine with infinite scroll & DOM parser
-├── server.js           # Express backend server with SSE streaming & CSV export endpoints
+For a Docker deployment on Render:
+
+1. Create a new **Web Service**.
+2. Connect this repository.
+3. Select **Docker** as the runtime.
+4. Deploy using the repository's `Dockerfile`.
+5. Expose port `3000`.
+6. Verify the generated service URL.
+
+The application reads the `PORT` environment variable, so hosted environments can provide their own port.
+
+### Other Docker hosts
+
+The same image can be deployed to any platform that supports Docker and permits Chromium/Playwright browser execution.
+
+## Project structure
+
+```text
+.
 ├── public/
-│   ├── index.html      # Tailwind CSS GUI with live terminal, metrics, and cards
-│   └── app.js          # Client-side SSE listener, filters, modal, and CSV downloader
-├── package.json        # Dependencies & scripts
-└── README.md           # Documentation
+│   ├── index.html     # Web UI
+│   └── app.js         # Client-side UI and SSE handling
+├── scraper.js         # Playwright scraper and extraction logic
+├── server.js          # Express API, SSE streaming and exports
+├── Dockerfile
+├── package.json
+├── LICENSE
+├── CONTRIBUTING.md
+├── SECURITY.md
+└── ROADMAP.md
 ```
+
+## Responsible use
+
+This project is intended for legitimate research, development, competitive intelligence, and analysis of information made publicly available through Meta Ad Library.
+
+Users are responsible for complying with Meta's terms, applicable laws, website access rules, intellectual-property requirements, privacy requirements, and any other applicable policies. Do not use the project to access private data, bypass authentication, or collect information you are not authorized to access.
+
+The project is not affiliated with, sponsored by, or endorsed by Meta.
+
+## Contributing
+
+Issues, bug reports, documentation improvements, and pull requests are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## Roadmap
+
+See [ROADMAP.md](ROADMAP.md).
+
+## License
+
+This project is released under the MIT License. See [LICENSE](LICENSE).
+
+## Disclaimer
+
+Meta Ad Library's HTML, APIs, behavior, and availability may change at any time. Extraction accuracy is therefore not guaranteed.
