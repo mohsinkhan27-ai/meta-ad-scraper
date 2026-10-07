@@ -13,7 +13,10 @@
  * 10. Video URL (video source URL or poster/thumbnail)
  */
 
+process.env.PLAYWRIGHT_BROWSERS_PATH = process.env.PLAYWRIGHT_BROWSERS_PATH || '0';
+
 const { chromium } = require('playwright');
+const { execSync } = require('child_process');
 
 /**
  * Helper to normalize search input into a valid Meta Ad Library URL
@@ -84,8 +87,9 @@ async function scrapeMetaAds({
     message: `Initializing Playwright browser (Headless: ${headless})...`
   });
 
-  // Launch Chromium with anti-bot detection evasion flags
-  const browser = await chromium.launch({
+  // Launch Chromium with anti-bot detection evasion flags and self-healing auto-install
+  let browser;
+  const launchOptions = {
     headless: headless !== false,
     args: [
       '--no-sandbox',
@@ -95,7 +99,27 @@ async function scrapeMetaAds({
       '--disable-features=IsolateOrigins,site-per-process',
       '--window-size=1440,900'
     ]
-  });
+  };
+
+  try {
+    browser = await chromium.launch(launchOptions);
+  } catch (launchErr) {
+    if (launchErr.message && (launchErr.message.includes("Executable doesn't exist") || launchErr.message.includes('playwright install'))) {
+      onProgress({
+        type: 'log',
+        level: 'warn',
+        message: 'Chromium binary not found. Auto-installing browser now (this takes a moment on first run)...'
+      });
+      try {
+        execSync('npx playwright install chromium', { stdio: 'inherit' });
+        browser = await chromium.launch(launchOptions);
+      } catch (installErr) {
+        throw new Error(`Failed to auto-install Playwright browser: ${installErr.message}`);
+      }
+    } else {
+      throw launchErr;
+    }
+  }
 
   try {
     const context = await browser.newContext({

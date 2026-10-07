@@ -2,6 +2,9 @@
  * Express Server for Meta Ad Library Scraper GUI
  */
 
+// Ensure Playwright stores and looks for browsers in node_modules rather than ephemeral ~/.cache
+process.env.PLAYWRIGHT_BROWSERS_PATH = process.env.PLAYWRIGHT_BROWSERS_PATH || '0';
+
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
